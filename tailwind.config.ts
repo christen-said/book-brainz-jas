@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Nunito", "sans-serif"],
-        body: ["Quicksand", "sans-serif"],
+        display: ["Baloo 2", "cursive"],
+        body: ["Space Grotesk", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
