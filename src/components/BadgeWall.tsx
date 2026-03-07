@@ -7,14 +7,14 @@ interface BadgeWallProps {
 
 const ALL_POSSIBLE_BADGES: Badge[] = [
   { id: "first-entry", name: "First Page", description: "Log your first reading!", emoji: "📖" },
-  { id: "weekly-star", name: "Weekly Star", description: "Read 5+ days this week!", emoji: "⭐" },
-  { id: "page-turner", name: "Page Turner", description: "Read 100+ pages total!", emoji: "📚" },
-  { id: "bookworm", name: "Bookworm", description: "Read 500+ pages total!", emoji: "🐛" },
-  { id: "explorer", name: "Book Explorer", description: "Read 3 different books!", emoji: "🗺️" },
-  { id: "library", name: "Library Builder", description: "Read 10 different books!", emoji: "🏛️" },
-  { id: "streak-2", name: "On a Roll", description: "2-week reading streak!", emoji: "🔥" },
-  { id: "streak-4", name: "Super Reader", description: "4-week reading streak!", emoji: "🏆" },
-  { id: "dedicated", name: "Dedicated Reader", description: "20 reading log entries!", emoji: "💪" },
+  { id: "weekly-star", name: "Weekly Legend", description: "Read 5+ days this week!", emoji: "⭐" },
+  { id: "page-turner", name: "Page Devourer", description: "Eat 100+ pages!", emoji: "🍕" },
+  { id: "bookworm", name: "Mega Nerd", description: "500+ pages consumed!", emoji: "🤓" },
+  { id: "explorer", name: "Book Hopper", description: "Read 3 different books!", emoji: "🐸" },
+  { id: "library", name: "Library Boss", description: "Read 10 different books!", emoji: "👑" },
+  { id: "streak-2", name: "On Fire", description: "2-week reading streak!", emoji: "🔥" },
+  { id: "streak-4", name: "Unstoppable", description: "4-week reading streak!", emoji: "💀" },
+  { id: "dedicated", name: "Absolute Unit", description: "20 reading log entries!", emoji: "💪" },
 ];
 
 export default function BadgeWall({ refreshKey }: BadgeWallProps) {
@@ -24,9 +24,10 @@ export default function BadgeWall({ refreshKey }: BadgeWallProps) {
   return (
     <div className="space-y-4">
       <div className="text-center mb-2">
-        <p className="text-sm font-semibold text-muted-foreground">
-          {earned.length} of {ALL_POSSIBLE_BADGES.length} badges earned
+        <p className="text-lg font-display font-bold text-foreground">
+          {earned.length === 0 ? "No badges yet... go earn some! 💪" : `${earned.length} of ${ALL_POSSIBLE_BADGES.length} badges unlocked 🔓`}
         </p>
+        <p className="text-sm text-muted-foreground">Collect 'em all!</p>
       </div>
       <div className="grid grid-cols-3 gap-3">
         {ALL_POSSIBLE_BADGES.map((badge) => {
@@ -34,12 +35,12 @@ export default function BadgeWall({ refreshKey }: BadgeWallProps) {
           return (
             <Card
               key={badge.id}
-              className={`p-4 text-center border-2 transition-all ${
-                isEarned ? "border-golden bg-golden/5 shadow-md" : "border-border bg-muted/30 opacity-50"
+              className={`p-4 text-center border-3 rounded-2xl transition-all ${
+                isEarned ? "border-primary bg-primary/5 funky-shadow" : "border-border bg-muted/30 opacity-40 grayscale"
               }`}
             >
-              <div className={`text-3xl mb-2 ${isEarned ? "animate-pop-in" : "grayscale"}`}>{badge.emoji}</div>
-              <p className={`text-xs font-bold ${isEarned ? "text-foreground" : "text-muted-foreground"}`}>{badge.name}</p>
+              <div className={`text-4xl mb-2 ${isEarned ? "animate-pop-in" : ""}`}>{badge.emoji}</div>
+              <p className={`text-xs font-display font-bold ${isEarned ? "text-foreground" : "text-muted-foreground"}`}>{badge.name}</p>
               <p className="text-[10px] text-muted-foreground mt-1">{badge.description}</p>
             </Card>
           );
