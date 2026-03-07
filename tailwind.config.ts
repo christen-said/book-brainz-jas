@@ -81,13 +81,24 @@ export default {
           to: { height: "0" },
         },
         "pop-in": {
-          "0%": { transform: "scale(0)", opacity: "0" },
-          "80%": { transform: "scale(1.1)" },
-          "100%": { transform: "scale(1)", opacity: "1" },
+          "0%": { transform: "scale(0) rotate(-10deg)", opacity: "0" },
+          "60%": { transform: "scale(1.2) rotate(3deg)" },
+          "80%": { transform: "scale(0.95) rotate(-1deg)" },
+          "100%": { transform: "scale(1) rotate(0deg)", opacity: "1" },
         },
         "shimmer": {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
+        },
+        "wiggle": {
+          "0%, 100%": { transform: "rotate(-3deg)" },
+          "50%": { transform: "rotate(3deg)" },
+        },
+        "bounce-in": {
+          "0%": { transform: "scale(0.3)", opacity: "0" },
+          "50%": { transform: "scale(1.15)" },
+          "70%": { transform: "scale(0.9)" },
+          "100%": { transform: "scale(1)", opacity: "1" },
         },
       },
       animation: {
