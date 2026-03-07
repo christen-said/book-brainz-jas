@@ -104,8 +104,10 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "pop-in": "pop-in 0.4s ease-out forwards",
+        "pop-in": "pop-in 0.5s ease-out forwards",
         "shimmer": "shimmer 2s linear infinite",
+        "wiggle": "wiggle 0.5s ease-in-out",
+        "bounce-in": "bounce-in 0.6s ease-out forwards",
       },
     },
   },
