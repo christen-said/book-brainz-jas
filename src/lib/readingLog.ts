@@ -1,6 +1,9 @@
+import { useEffect, useState, useCallback } from "react";
+import { getEntriesFromDb, saveEntryToDb } from "./supabase";
+
 export interface ReadingEntry {
   id: string;
-  date: string; // ISO date string
+  date: string;
   title: string;
   author: string;
   startPage: number;
@@ -17,26 +20,38 @@ export interface Badge {
   earnedDate?: string;
 }
 
-const STORAGE_KEY = "reading-log-entries";
+// Hook-based API for async Supabase data
+export function useReadingEntries(refreshKey: number = 0) {
+  const [entries, setEntries] = useState<ReadingEntry[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export function getEntries(): ReadingEntry[] {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  return raw ? JSON.parse(raw) : [];
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await getEntriesFromDb();
+      setEntries(data);
+    } catch (e) {
+      console.error("Failed to load entries:", e);
+    }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh, refreshKey]);
+
+  return { entries, loading, refresh };
 }
 
-export function saveEntry(entry: ReadingEntry) {
-  const entries = getEntries();
-  entries.push(entry);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+export async function saveEntry(entry: ReadingEntry) {
+  await saveEntryToDb(entry);
 }
 
-export function getEntriesForWeek(date: Date): ReadingEntry[] {
-  const entries = getEntries();
+function getEntriesForWeek(entries: ReadingEntry[], date: Date): ReadingEntry[] {
   const startOfWeek = new Date(date);
   const day = startOfWeek.getDay();
   startOfWeek.setDate(startOfWeek.getDate() - day);
   startOfWeek.setHours(0, 0, 0, 0);
-
   const endOfWeek = new Date(startOfWeek);
   endOfWeek.setDate(endOfWeek.getDate() + 7);
 
@@ -46,32 +61,33 @@ export function getEntriesForWeek(date: Date): ReadingEntry[] {
   });
 }
 
-export function getUniqueDaysThisWeek(date: Date): number {
-  const weekEntries = getEntriesForWeek(date);
+export function getUniqueDaysForWeek(entries: ReadingEntry[], date: Date): number {
+  const weekEntries = getEntriesForWeek(entries, date);
   const uniqueDays = new Set(weekEntries.map((e) => e.date.split("T")[0]));
   return uniqueDays.size;
 }
 
-export function getTotalPagesRead(): number {
-  return getEntries().reduce((sum, e) => sum + Math.max(0, e.endPage - e.startPage), 0);
+export function getWeekEntries(entries: ReadingEntry[], date: Date): ReadingEntry[] {
+  return getEntriesForWeek(entries, date);
 }
 
-export function getTotalBooks(): number {
-  const titles = new Set(getEntries().map((e) => `${e.title}::${e.author}`));
+export function getTotalPagesRead(entries: ReadingEntry[]): number {
+  return entries.reduce((sum, e) => sum + Math.max(0, e.endPage - e.startPage), 0);
+}
+
+export function getTotalBooks(entries: ReadingEntry[]): number {
+  const titles = new Set(entries.map((e) => `${e.title}::${e.author}`));
   return titles.size;
 }
 
-export function getStreakWeeks(): number {
-  const entries = getEntries();
+export function getStreakWeeks(entries: ReadingEntry[]): number {
   if (entries.length === 0) return 0;
-
   const now = new Date();
   let streakWeeks = 0;
   let checkDate = new Date(now);
 
-  // Check current week first, then go backwards
   while (true) {
-    const days = getUniqueDaysThisWeek(checkDate);
+    const days = getUniqueDaysForWeek(entries, checkDate);
     if (days >= 5) {
       streakWeeks++;
       checkDate.setDate(checkDate.getDate() - 7);
@@ -135,13 +151,12 @@ export function getRandomPrompts(count: number = 3): string[] {
   return selected;
 }
 
-export function checkBadges(): Badge[] {
+export function checkBadges(entries: ReadingEntry[]): Badge[] {
   const allBadges: Badge[] = [];
-  const entries = getEntries();
-  const totalPages = getTotalPagesRead();
-  const totalBooks = getTotalBooks();
-  const streakWeeks = getStreakWeeks();
-  const daysThisWeek = getUniqueDaysThisWeek(new Date());
+  const totalPages = getTotalPagesRead(entries);
+  const totalBooks = getTotalBooks(entries);
+  const streakWeeks = getStreakWeeks(entries);
+  const daysThisWeek = getUniqueDaysForWeek(entries, new Date());
 
   if (entries.length >= 1) allBadges.push({ id: "first-entry", name: "First Page", description: "Logged your first reading!", emoji: "📖" });
   if (daysThisWeek >= 5) allBadges.push({ id: "weekly-star", name: "Weekly Star", description: "Read 5+ days this week!", emoji: "⭐" });
