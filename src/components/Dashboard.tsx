@@ -1,14 +1,13 @@
-import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import {
-  getEntries,
-  getEntriesForWeek,
-  getUniqueDaysThisWeek,
+  useReadingEntries,
+  getWeekEntries,
+  getUniqueDaysForWeek,
   getTotalPagesRead,
   getTotalBooks,
-  type ReadingEntry,
 } from "@/lib/readingLog";
 import { BookOpen, FileText, Calendar, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
 
 interface DashboardProps {
   refreshKey: number;
@@ -35,14 +34,13 @@ const DAY_EMOJIS_DONE = ["🌟", "💪", "🔥", "⚡", "🎯", "🚀", "👑"];
 const DAY_EMOJIS_TODAY = "👈";
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-function MonthlyView({ refreshKey }: { refreshKey: number }) {
+function MonthlyView({ entries }: { entries: { date: string; startPage: number; endPage: number }[] }) {
   const [monthOffset, setMonthOffset] = useState(0);
   const now = new Date();
   const viewDate = new Date(now.getFullYear(), now.getMonth() + monthOffset, 1);
   const year = viewDate.getFullYear();
   const month = viewDate.getMonth();
 
-  const entries = getEntries();
   const dayData = new Map<number, { pages: number; count: number }>();
   entries.forEach((e) => {
     const d = new Date(e.date);
@@ -137,12 +135,12 @@ function MonthlyView({ refreshKey }: { refreshKey: number }) {
 }
 
 export default function Dashboard({ refreshKey }: DashboardProps) {
+  const { entries, loading } = useReadingEntries(refreshKey);
   const now = new Date();
-  const weekEntries = getEntriesForWeek(now);
-  const daysThisWeek = getUniqueDaysThisWeek(now);
-  const totalPages = getTotalPagesRead();
-  const totalBooks = getTotalBooks();
-  const totalEntries = getEntries().length;
+  const weekEntries = getWeekEntries(entries, now);
+  const daysThisWeek = getUniqueDaysForWeek(entries, now);
+  const totalPages = getTotalPagesRead(entries);
+  const totalBooks = getTotalBooks(entries);
 
   const dayMap = new Set<number>();
   weekEntries.forEach((e) => {
@@ -151,6 +149,15 @@ export default function Dashboard({ refreshKey }: DashboardProps) {
   });
 
   const weekPages = weekEntries.reduce((sum, e) => sum + Math.max(0, e.endPage - e.startPage), 0);
+
+  if (loading) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-4xl mb-2 animate-wiggle">📚</div>
+        <p className="text-muted-foreground font-display font-bold">Loading your stats...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -194,16 +201,15 @@ export default function Dashboard({ refreshKey }: DashboardProps) {
       </Card>
 
       {/* Monthly View */}
-      <MonthlyView refreshKey={refreshKey} />
+      <MonthlyView entries={entries} />
 
       {/* Recent Entries */}
-      {totalEntries > 0 && (
+      {entries.length > 0 && (
         <Card className="p-5 funky-border bg-card">
           <h3 className="font-display font-bold text-foreground mb-3">Recent Reads 📝</h3>
           <div className="space-y-3">
-            {getEntries()
-              .slice(-5)
-              .reverse()
+            {entries
+              .slice(0, 5)
               .map((entry, idx) => (
                 <div key={entry.id} className="flex items-center gap-3 p-3 rounded-2xl bg-secondary/40 border-2 border-border">
                   <div className="text-2xl">{["📕", "📗", "📘", "📙", "📓"][idx % 5]}</div>

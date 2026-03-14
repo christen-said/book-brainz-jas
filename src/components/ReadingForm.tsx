@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { saveEntry, getRandomPrompts, type ReadingEntry } from "@/lib/readingLog";
-import { BookOpen, ChevronRight, Check, Sparkles } from "lucide-react";
+import { ChevronRight, Check } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface ReadingFormProps {
   onSave: () => void;
@@ -18,6 +19,8 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
   const [endPage, setEndPage] = useState("");
   const [prompts, setPrompts] = useState<string[]>([]);
   const [responses, setResponses] = useState<string[]>([]);
+  const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     setPrompts(getRandomPrompts(3));
@@ -28,23 +31,29 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
     setStep("prompts");
   };
 
-  const handlePromptSubmit = () => {
+  const handlePromptSubmit = async () => {
     const filledResponses = responses.filter((r) => r.trim().length > 0);
     if (filledResponses.length < 2) return;
 
-    const entry: ReadingEntry = {
-      id: crypto.randomUUID(),
-      date: new Date().toISOString(),
-      title,
-      author,
-      startPage: parseInt(startPage),
-      endPage: parseInt(endPage),
-      prompts,
-      responses,
-    };
-    saveEntry(entry);
-    setStep("done");
-    onSave();
+    setSaving(true);
+    try {
+      const entry: ReadingEntry = {
+        id: crypto.randomUUID(),
+        date: new Date().toISOString(),
+        title,
+        author,
+        startPage: parseInt(startPage),
+        endPage: parseInt(endPage),
+        prompts,
+        responses,
+      };
+      await saveEntry(entry);
+      setStep("done");
+      onSave();
+    } catch (e: any) {
+      toast({ title: "Error saving 😬", description: e.message, variant: "destructive" });
+    }
+    setSaving(false);
   };
 
   const resetForm = () => {
@@ -146,9 +155,9 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
                 onClick={handlePromptSubmit}
                 className="flex-1 rounded-xl font-display font-bold funky-shadow"
                 size="lg"
-                disabled={responses.filter((r) => r?.trim().length > 0).length < 2}
+                disabled={responses.filter((r) => r?.trim().length > 0).length < 2 || saving}
               >
-                <Check className="w-4 h-4 mr-1" /> Lock It In 🔒
+                <Check className="w-4 h-4 mr-1" /> {saving ? "Saving..." : "Lock It In 🔒"}
               </Button>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { checkBadges, type Badge } from "@/lib/readingLog";
+import { checkBadges, useReadingEntries, type Badge } from "@/lib/readingLog";
 
 interface BadgeWallProps {
   refreshKey: number;
@@ -18,8 +18,18 @@ const ALL_POSSIBLE_BADGES: Badge[] = [
 ];
 
 export default function BadgeWall({ refreshKey }: BadgeWallProps) {
-  const earned = checkBadges();
+  const { entries, loading } = useReadingEntries(refreshKey);
+  const earned = checkBadges(entries);
   const earnedIds = new Set(earned.map((b) => b.id));
+
+  if (loading) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-4xl mb-2 animate-wiggle">🏆</div>
+        <p className="text-muted-foreground font-display font-bold">Loading badges...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
