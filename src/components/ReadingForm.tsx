@@ -21,13 +21,29 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
   const [prompts, setPrompts] = useState<string[]>([]);
   const [responses, setResponses] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
+  const [loadingPrompts, setLoadingPrompts] = useState(false);
   const [funFact, setFunFact] = useState<string | null>(null);
   const [loadingFact, setLoadingFact] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    setPrompts(getRandomPrompts(3));
-  }, []);
+  const fetchBookPrompts = async (bookTitle: string, bookAuthor: string) => {
+    setLoadingPrompts(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("book-prompts", {
+        body: { title: bookTitle, author: bookAuthor },
+      });
+      if (error) throw error;
+      if (data?.prompts?.length >= 3) {
+        setPrompts(data.prompts);
+      } else {
+        setPrompts(getRandomPrompts(3));
+      }
+    } catch (e) {
+      console.error("Book prompts error:", e);
+      setPrompts(getRandomPrompts(3));
+    }
+    setLoadingPrompts(false);
+  };
 
   const fetchFunFact = async (bookTitle: string, bookAuthor: string) => {
     setLoadingFact(true);
@@ -46,6 +62,7 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
 
   const handleBookSubmit = () => {
     if (!title || !author || !startPage || !endPage) return;
+    fetchBookPrompts(title, author);
     setStep("prompts");
   };
 
@@ -81,7 +98,7 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
     setStartPage("");
     setEndPage("");
     setResponses([]);
-    setPrompts(getRandomPrompts(3));
+    setPrompts([]);
     setFunFact(null);
     setStep("book");
   };
@@ -162,38 +179,46 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
               <p className="text-sm text-muted-foreground">Answer at least 2. You can do this in your sleep.</p>
             </div>
           </div>
-          <div className="space-y-5">
-            {prompts.map((prompt, i) => (
-              <div key={i} className="space-y-2">
-                <label className="text-sm font-bold text-foreground block font-display">
-                  {["🅰️", "🅱️", "🆒"][i]} {prompt}
-                </label>
-                <Textarea
-                  placeholder="Whatever comes to mind..."
-                  value={responses[i] || ""}
-                  onChange={(e) => {
-                    const newResponses = [...responses];
-                    newResponses[i] = e.target.value;
-                    setResponses(newResponses);
-                  }}
-                  className="bg-secondary/30 min-h-[80px] rounded-xl border-2"
-                />
-              </div>
-            ))}
-            <div className="flex gap-3">
-              <Button variant="outline" onClick={() => setStep("book")} className="flex-1 rounded-xl font-display font-bold">
-                ← Back
-              </Button>
-              <Button
-                onClick={handlePromptSubmit}
-                className="flex-1 rounded-xl font-display font-bold funky-shadow"
-                size="lg"
-                disabled={responses.filter((r) => r?.trim().length > 0).length < 2 || saving}
-              >
-                <Check className="w-4 h-4 mr-1" /> {saving ? "Saving..." : "Finally Done ✅"}
-              </Button>
+
+          {loadingPrompts ? (
+            <div className="text-center py-8">
+              <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground font-display font-bold">Coming up with questions about your book...</p>
             </div>
-          </div>
+          ) : (
+            <div className="space-y-5">
+              {prompts.map((prompt, i) => (
+                <div key={i} className="space-y-2">
+                  <label className="text-sm font-bold text-foreground block font-display">
+                    {["🅰️", "🅱️", "🆒"][i]} {prompt}
+                  </label>
+                  <Textarea
+                    placeholder="Whatever comes to mind..."
+                    value={responses[i] || ""}
+                    onChange={(e) => {
+                      const newResponses = [...responses];
+                      newResponses[i] = e.target.value;
+                      setResponses(newResponses);
+                    }}
+                    className="bg-secondary/30 min-h-[80px] rounded-xl border-2"
+                  />
+                </div>
+              ))}
+              <div className="flex gap-3">
+                <Button variant="outline" onClick={() => setStep("book")} className="flex-1 rounded-xl font-display font-bold">
+                  ← Back
+                </Button>
+                <Button
+                  onClick={handlePromptSubmit}
+                  className="flex-1 rounded-xl font-display font-bold funky-shadow"
+                  size="lg"
+                  disabled={responses.filter((r) => r?.trim().length > 0).length < 2 || saving}
+                >
+                  <Check className="w-4 h-4 mr-1" /> {saving ? "Saving..." : "Finally Done ✅"}
+                </Button>
+              </div>
+            </div>
+          )}
         </Card>
       )}
     </div>
