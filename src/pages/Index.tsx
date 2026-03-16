@@ -19,14 +19,14 @@ const Index = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center text-3xl shadow-md rotate-[-6deg] hover:rotate-[6deg] transition-transform duration-300">
-                🤓
+                😑
               </div>
               <div>
                 <h1 className="text-2xl font-display font-extrabold text-foreground tracking-tight">
                   Book Brainz
                 </h1>
                 <p className="text-sm text-muted-foreground font-medium">
-                  feed your brain, one page at a time 🧠✨
+                  ugh, fine. let's do this. 📖
                 </p>
               </div>
             </div>

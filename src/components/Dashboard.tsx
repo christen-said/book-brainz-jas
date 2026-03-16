@@ -30,7 +30,7 @@ function StatCard({ icon: Icon, label, value, color, emoji }: { icon: any; label
 }
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const DAY_EMOJIS_DONE = ["🌟", "💪", "🔥", "⚡", "🎯", "🚀", "👑"];
+const DAY_EMOJIS_DONE = ["✓", "✓", "✓", "✓", "✓", "✓", "✓"];
 const DAY_EMOJIS_TODAY = "👈";
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -74,7 +74,7 @@ function MonthlyView({ entries }: { entries: { date: string; startPage: number; 
           <ChevronLeft className="w-5 h-5 text-foreground" />
         </button>
         <h3 className="font-display font-bold text-foreground">
-          {MONTH_NAMES[month]} {year} 📅
+          {MONTH_NAMES[month]} {year}
         </h3>
         <button
           onClick={() => canGoForward && setMonthOffset((o) => o + 1)}
@@ -127,7 +127,7 @@ function MonthlyView({ entries }: { entries: { date: string; startPage: number; 
 
       {totalMonthDays >= 20 && (
         <div className="mt-3 p-3 rounded-2xl bg-primary/10 text-center animate-bounce-in">
-          <span className="text-sm font-bold text-foreground">🤯 20+ days this month?! You're UNSTOPPABLE!</span>
+          <span className="text-sm font-bold text-foreground">20+ days this month. Not bad, honestly.</span>
         </div>
       )}
     </Card>
@@ -170,7 +170,7 @@ export default function Dashboard({ refreshKey }: DashboardProps) {
 
       {/* Weekly Progress */}
       <Card className="p-5 funky-border bg-card">
-        <h3 className="font-display font-bold text-foreground mb-4">This Week's Vibe Check 📊</h3>
+        <h3 className="font-display font-bold text-foreground mb-4">This Week's Damage 📊</h3>
         <div className="flex justify-between gap-2">
           {DAY_NAMES.map((day, i) => {
             const done = dayMap.has(i);
@@ -195,7 +195,7 @@ export default function Dashboard({ refreshKey }: DashboardProps) {
         </div>
         {daysThisWeek >= 5 && (
           <div className="mt-4 p-3 rounded-2xl bg-primary/10 text-center animate-bounce-in">
-            <span className="text-sm font-bold text-foreground">🏆 YOU'RE A LEGEND! 5-day streak unlocked!</span>
+            <span className="text-sm font-bold text-foreground">5 days done. Respect. ✊</span>
           </div>
         )}
       </Card>
