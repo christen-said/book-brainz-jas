@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { saveEntry, getRandomPrompts, type ReadingEntry } from "@/lib/readingLog";
-import { ChevronRight, Check } from "lucide-react";
+import { ChevronRight, Check, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ReadingFormProps {
   onSave: () => void;
@@ -20,11 +21,28 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
   const [prompts, setPrompts] = useState<string[]>([]);
   const [responses, setResponses] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
+  const [funFact, setFunFact] = useState<string | null>(null);
+  const [loadingFact, setLoadingFact] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     setPrompts(getRandomPrompts(3));
   }, []);
+
+  const fetchFunFact = async (bookTitle: string, bookAuthor: string) => {
+    setLoadingFact(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("fun-fact", {
+        body: { title: bookTitle, author: bookAuthor },
+      });
+      if (error) throw error;
+      setFunFact(data?.funFact || "Books have been around for like 5,000 years. You'd think we'd be done by now.");
+    } catch (e) {
+      console.error("Fun fact error:", e);
+      setFunFact("Fun fact: your brain literally grows new connections when you read. So... you're welcome, brain.");
+    }
+    setLoadingFact(false);
+  };
 
   const handleBookSubmit = () => {
     if (!title || !author || !startPage || !endPage) return;
@@ -50,8 +68,9 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
       await saveEntry(entry);
       setStep("done");
       onSave();
+      fetchFunFact(title, author);
     } catch (e: any) {
-      toast({ title: "Error saving 😬", description: e.message, variant: "destructive" });
+      toast({ title: "Welp, that broke 💀", description: e.message, variant: "destructive" });
     }
     setSaving(false);
   };
@@ -63,17 +82,31 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
     setEndPage("");
     setResponses([]);
     setPrompts(getRandomPrompts(3));
+    setFunFact(null);
     setStep("book");
   };
 
   if (step === "done") {
     return (
       <Card className="p-8 text-center funky-border bg-card">
-        <div className="text-7xl mb-4 animate-pop-in">🥳</div>
-        <h3 className="text-2xl font-display font-bold text-foreground mb-2">YESSS! Nailed it!</h3>
-        <p className="text-muted-foreground mb-6">Your brain just leveled up. No big deal. 😎</p>
+        <div className="text-7xl mb-4 animate-pop-in">😮‍💨</div>
+        <h3 className="text-2xl font-display font-bold text-foreground mb-2">Ok, that's done.</h3>
+        <p className="text-muted-foreground mb-6">Look at you, being all responsible and stuff. 👏</p>
+        
+        {/* Fun Fact */}
+        <div className="mb-6 p-4 rounded-2xl bg-primary/10 border-2 border-primary/30 text-left">
+          <p className="text-xs font-display font-bold text-primary uppercase tracking-wide mb-2">🤔 random fun fact tho...</p>
+          {loadingFact ? (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="w-4 h-4 animate-spin" /> thinking...
+            </div>
+          ) : (
+            <p className="text-sm text-foreground font-medium">{funFact}</p>
+          )}
+        </div>
+
         <Button onClick={resetForm} size="lg" className="rounded-xl font-display font-bold funky-shadow">
-          Do It Again 🔥
+          Ugh, Do Another One 🫠
         </Button>
       </Card>
     );
@@ -88,8 +121,8 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
               📖
             </div>
             <div>
-              <h3 className="font-display font-bold text-lg text-foreground">Whatcha reading? 👀</h3>
-              <p className="text-sm text-muted-foreground">Spill the tea on your book!</p>
+              <h3 className="font-display font-bold text-lg text-foreground">What book is it this time? 🙄</h3>
+              <p className="text-sm text-muted-foreground">Just fill it out, it'll be over soon.</p>
             </div>
           </div>
           <div className="space-y-4">
@@ -112,7 +145,7 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
               </div>
             </div>
             <Button onClick={handleBookSubmit} className="w-full rounded-xl font-display font-bold funky-shadow" size="lg" disabled={!title || !author || !startPage || !endPage}>
-              Next: Brain Time 🧠 <ChevronRight className="w-4 h-4 ml-1" />
+              Next: The Questions Part 😩 <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
         </Card>
@@ -125,8 +158,8 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
               💭
             </div>
             <div>
-              <h3 className="font-display font-bold text-lg text-foreground">Big brain time! 🤯</h3>
-              <p className="text-sm text-muted-foreground">Answer at least 2. You got this!</p>
+              <h3 className="font-display font-bold text-lg text-foreground">Almost done, promise. 🤞</h3>
+              <p className="text-sm text-muted-foreground">Answer at least 2. You can do this in your sleep.</p>
             </div>
           </div>
           <div className="space-y-5">
@@ -136,7 +169,7 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
                   {["🅰️", "🅱️", "🆒"][i]} {prompt}
                 </label>
                 <Textarea
-                  placeholder="Drop your thoughts here..."
+                  placeholder="Whatever comes to mind..."
                   value={responses[i] || ""}
                   onChange={(e) => {
                     const newResponses = [...responses];
@@ -157,7 +190,7 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
                 size="lg"
                 disabled={responses.filter((r) => r?.trim().length > 0).length < 2 || saving}
               >
-                <Check className="w-4 h-4 mr-1" /> {saving ? "Saving..." : "Lock It In 🔒"}
+                <Check className="w-4 h-4 mr-1" /> {saving ? "Saving..." : "Finally Done ✅"}
               </Button>
             </div>
           </div>

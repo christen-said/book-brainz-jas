@@ -6,15 +6,15 @@ interface BadgeWallProps {
 }
 
 const ALL_POSSIBLE_BADGES: Badge[] = [
-  { id: "first-entry", name: "First Page", description: "Log your first reading!", emoji: "📖" },
-  { id: "weekly-star", name: "Weekly Legend", description: "Read 5+ days this week!", emoji: "⭐" },
-  { id: "page-turner", name: "Page Devourer", description: "Eat 100+ pages!", emoji: "🍕" },
-  { id: "bookworm", name: "Mega Nerd", description: "500+ pages consumed!", emoji: "🤓" },
-  { id: "explorer", name: "Book Hopper", description: "Read 3 different books!", emoji: "🐸" },
-  { id: "library", name: "Library Boss", description: "Read 10 different books!", emoji: "👑" },
-  { id: "streak-2", name: "On Fire", description: "2-week reading streak!", emoji: "🔥" },
-  { id: "streak-4", name: "Unstoppable", description: "4-week reading streak!", emoji: "💀" },
-  { id: "dedicated", name: "Absolute Unit", description: "20 reading log entries!", emoji: "💪" },
+  { id: "first-entry", name: "First One", description: "Logged your first reading.", emoji: "📖" },
+  { id: "weekly-star", name: "5-Day Survivor", description: "Read 5+ days this week.", emoji: "⭐" },
+  { id: "page-turner", name: "Page Muncher", description: "100+ pages. Respect.", emoji: "🍕" },
+  { id: "bookworm", name: "500 Club", description: "500+ pages. That's a lot.", emoji: "😤" },
+  { id: "explorer", name: "Book Hopper", description: "3 different books!", emoji: "🐸" },
+  { id: "library", name: "Library Boss", description: "10 different books. Wow ok.", emoji: "👑" },
+  { id: "streak-2", name: "On a Roll", description: "2-week streak. Casual.", emoji: "🔥" },
+  { id: "streak-4", name: "Can't Stop", description: "4-week streak. Lowkey impressive.", emoji: "💀" },
+  { id: "dedicated", name: "20 Entries", description: "20 log entries. Committed.", emoji: "💪" },
 ];
 
 export default function BadgeWall({ refreshKey }: BadgeWallProps) {
@@ -35,9 +35,9 @@ export default function BadgeWall({ refreshKey }: BadgeWallProps) {
     <div className="space-y-4">
       <div className="text-center mb-2">
         <p className="text-lg font-display font-bold text-foreground">
-          {earned.length === 0 ? "No badges yet... go earn some! 💪" : `${earned.length} of ${ALL_POSSIBLE_BADGES.length} badges unlocked 🔓`}
+          {earned.length === 0 ? "No badges yet. Gotta start somewhere." : `${earned.length} of ${ALL_POSSIBLE_BADGES.length} unlocked`}
         </p>
-        <p className="text-sm text-muted-foreground">Collect 'em all!</p>
+        <p className="text-sm text-muted-foreground">Collect 'em if you want, no pressure.</p>
       </div>
       <div className="grid grid-cols-3 gap-3">
         {ALL_POSSIBLE_BADGES.map((badge) => {

@@ -20,7 +20,7 @@ export default function Auth() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) {
-      toast({ title: "Oops! 😬", description: error.message, variant: "destructive" });
+      toast({ title: "Nope 😬", description: error.message, variant: "destructive" });
     }
   };
 
@@ -37,9 +37,9 @@ export default function Auth() {
     });
     setLoading(false);
     if (error) {
-      toast({ title: "Oops! 😬", description: error.message, variant: "destructive" });
+      toast({ title: "That didn't work 😬", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Check your email! 📧", description: "We sent you a confirmation link." });
+      toast({ title: "Check your email 📧", description: "We sent you a confirmation link." });
     }
   };
 
@@ -51,9 +51,9 @@ export default function Auth() {
     });
     setLoading(false);
     if (error) {
-      toast({ title: "Oops! 😬", description: error.message, variant: "destructive" });
+      toast({ title: "Hmm 😬", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Check your email! 📧", description: "Password reset link sent." });
+      toast({ title: "Check your email 📧", description: "Password reset link sent." });
     }
   };
 
@@ -63,18 +63,18 @@ export default function Auth() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="w-20 h-20 rounded-3xl bg-primary flex items-center justify-center text-5xl shadow-md mx-auto mb-4 rotate-[-6deg] hover:rotate-[6deg] transition-transform duration-300">
-            🤓
+            😑
           </div>
           <h1 className="text-3xl font-display font-extrabold text-foreground">Book Brainz</h1>
           <p className="text-sm text-muted-foreground font-medium mt-1">
-            feed your brain, one page at a time 🧠✨
+            ugh, fine. let's do this. 📖
           </p>
         </div>
 
         <Card className="p-6 funky-border bg-card">
           {mode === "login" && (
             <form onSubmit={handleLogin} className="space-y-4">
-              <h2 className="font-display font-bold text-xl text-foreground text-center">Welcome back! 👋</h2>
+              <h2 className="font-display font-bold text-xl text-foreground text-center">Oh, you're back. 👋</h2>
               <div>
                 <label className="text-sm font-bold text-foreground mb-1 block font-display">Email</label>
                 <Input type="email" placeholder="you@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="bg-secondary/30 rounded-xl border-2" required />
@@ -84,16 +84,16 @@ export default function Auth() {
                 <Input type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="bg-secondary/30 rounded-xl border-2" required />
               </div>
               <Button type="submit" className="w-full rounded-xl font-display font-bold funky-shadow" size="lg" disabled={loading}>
-                <LogIn className="w-4 h-4 mr-1" /> {loading ? "Logging in..." : "Let's Go! 🚀"}
+                <LogIn className="w-4 h-4 mr-1" /> {loading ? "Loading..." : "Let's Get This Over With"}
               </Button>
               <div className="text-center space-y-2">
                 <button type="button" onClick={() => setMode("forgot")} className="text-sm text-primary hover:underline font-medium">
-                  Forgot password?
+                  Forgot password? classic.
                 </button>
                 <p className="text-sm text-muted-foreground">
                   No account?{" "}
                   <button type="button" onClick={() => setMode("signup")} className="text-primary font-bold hover:underline">
-                    Sign up!
+                    Sign up I guess
                   </button>
                 </p>
               </div>
@@ -102,7 +102,7 @@ export default function Auth() {
 
           {mode === "signup" && (
             <form onSubmit={handleSignup} className="space-y-4">
-              <h2 className="font-display font-bold text-xl text-foreground text-center">Join the brainy squad! 🧠</h2>
+              <h2 className="font-display font-bold text-xl text-foreground text-center">New here? Cool cool. 🫠</h2>
               <div>
                 <label className="text-sm font-bold text-foreground mb-1 block font-display">Your Name</label>
                 <Input placeholder="What should we call you?" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="bg-secondary/30 rounded-xl border-2" />
@@ -113,15 +113,15 @@ export default function Auth() {
               </div>
               <div>
                 <label className="text-sm font-bold text-foreground mb-1 block font-display">Password</label>
-                <Input type="password" placeholder="Make it strong! 💪" value={password} onChange={(e) => setPassword(e.target.value)} className="bg-secondary/30 rounded-xl border-2" required minLength={6} />
+                <Input type="password" placeholder="Make it decent" value={password} onChange={(e) => setPassword(e.target.value)} className="bg-secondary/30 rounded-xl border-2" required minLength={6} />
               </div>
               <Button type="submit" className="w-full rounded-xl font-display font-bold funky-shadow" size="lg" disabled={loading}>
-                <UserPlus className="w-4 h-4 mr-1" /> {loading ? "Creating..." : "Create Account 🎉"}
+                <UserPlus className="w-4 h-4 mr-1" /> {loading ? "Creating..." : "Create Account, Whatever"}
               </Button>
               <p className="text-sm text-muted-foreground text-center">
                 Already have an account?{" "}
                 <button type="button" onClick={() => setMode("login")} className="text-primary font-bold hover:underline">
-                  Log in!
+                  Log in
                 </button>
               </p>
             </form>
@@ -130,7 +130,7 @@ export default function Auth() {
           {mode === "forgot" && (
             <form onSubmit={handleForgotPassword} className="space-y-4">
               <button type="button" onClick={() => setMode("login")} className="flex items-center text-sm text-muted-foreground hover:text-foreground">
-                <ArrowLeft className="w-4 h-4 mr-1" /> Back to login
+                <ArrowLeft className="w-4 h-4 mr-1" /> Back
               </button>
               <h2 className="font-display font-bold text-xl text-foreground text-center">Reset Password 🔑</h2>
               <div>
