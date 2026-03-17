@@ -86,6 +86,8 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
       await saveEntry(entry);
       setStep("done");
       onSave();
+      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+      setTimeout(() => confetti({ particleCount: 60, spread: 100, origin: { y: 0.5 } }), 300);
       fetchFunFact(title, author);
     } catch (e: any) {
       toast({ title: "Welp, that broke 💀", description: e.message, variant: "destructive" });
