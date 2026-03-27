@@ -109,7 +109,20 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
     setResponses([]);
     setPrompts([]);
     setFunFact(null);
+    setCorrection(null);
     setStep("book");
+  };
+
+  const acceptCorrection = () => {
+    if (correction) {
+      setTitle(correction.title);
+      setAuthor(correction.author);
+      setCorrection(null);
+    }
+  };
+
+  const dismissCorrection = () => {
+    setCorrection(null);
   };
 
   if (step === "done") {
