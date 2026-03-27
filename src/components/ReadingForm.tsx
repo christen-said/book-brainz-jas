@@ -27,13 +27,19 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
   const [loadingFact, setLoadingFact] = useState(false);
   const { toast } = useToast();
 
+  const [correction, setCorrection] = useState<{ title: string; author: string } | null>(null);
+
   const fetchBookPrompts = async (bookTitle: string, bookAuthor: string) => {
     setLoadingPrompts(true);
+    setCorrection(null);
     try {
       const { data, error } = await supabase.functions.invoke("book-prompts", {
         body: { title: bookTitle, author: bookAuthor },
       });
       if (error) throw error;
+      if (data?.wasFixed && data.correctedTitle && data.correctedAuthor) {
+        setCorrection({ title: data.correctedTitle, author: data.correctedAuthor });
+      }
       if (data?.prompts?.length >= 3) {
         setPrompts(data.prompts);
       } else {
