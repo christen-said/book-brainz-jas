@@ -27,13 +27,19 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
   const [loadingFact, setLoadingFact] = useState(false);
   const { toast } = useToast();
 
+  const [correction, setCorrection] = useState<{ title: string; author: string } | null>(null);
+
   const fetchBookPrompts = async (bookTitle: string, bookAuthor: string) => {
     setLoadingPrompts(true);
+    setCorrection(null);
     try {
       const { data, error } = await supabase.functions.invoke("book-prompts", {
         body: { title: bookTitle, author: bookAuthor },
       });
       if (error) throw error;
+      if (data?.wasFixed && data.correctedTitle && data.correctedAuthor) {
+        setCorrection({ title: data.correctedTitle, author: data.correctedAuthor });
+      }
       if (data?.prompts?.length >= 3) {
         setPrompts(data.prompts);
       } else {
@@ -103,7 +109,20 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
     setResponses([]);
     setPrompts([]);
     setFunFact(null);
+    setCorrection(null);
     setStep("book");
+  };
+
+  const acceptCorrection = () => {
+    if (correction) {
+      setTitle(correction.title);
+      setAuthor(correction.author);
+      setCorrection(null);
+    }
+  };
+
+  const dismissCorrection = () => {
+    setCorrection(null);
   };
 
   if (step === "done") {
@@ -182,6 +201,25 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
               <p className="text-sm text-muted-foreground">Answer at least 2. You can do this in your sleep.</p>
             </div>
           </div>
+
+          {correction && (
+            <div className="mb-4 p-3 rounded-xl bg-accent/15 border-2 border-accent/30">
+              <p className="text-sm font-display font-bold text-foreground mb-2">
+                ✨ Did you mean...?
+              </p>
+              <p className="text-sm text-foreground mb-3">
+                <span className="font-bold">{correction.title}</span> by <span className="font-bold">{correction.author}</span>
+              </p>
+              <div className="flex gap-2">
+                <Button size="sm" onClick={acceptCorrection} className="rounded-lg font-display font-bold text-xs">
+                  Yep, that's it 👍
+                </Button>
+                <Button size="sm" variant="outline" onClick={dismissCorrection} className="rounded-lg font-display font-bold text-xs">
+                  Nah, I spelled it right
+                </Button>
+              </div>
+            </div>
+          )}
 
           {loadingPrompts ? (
             <div className="text-center py-8">
