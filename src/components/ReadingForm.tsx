@@ -202,6 +202,25 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
             </div>
           </div>
 
+          {correction && (
+            <div className="mb-4 p-3 rounded-xl bg-accent/15 border-2 border-accent/30">
+              <p className="text-sm font-display font-bold text-foreground mb-2">
+                ✨ Did you mean...?
+              </p>
+              <p className="text-sm text-foreground mb-3">
+                <span className="font-bold">{correction.title}</span> by <span className="font-bold">{correction.author}</span>
+              </p>
+              <div className="flex gap-2">
+                <Button size="sm" onClick={acceptCorrection} className="rounded-lg font-display font-bold text-xs">
+                  Yep, that's it 👍
+                </Button>
+                <Button size="sm" variant="outline" onClick={dismissCorrection} className="rounded-lg font-display font-bold text-xs">
+                  Nah, I spelled it right
+                </Button>
+              </div>
+            </div>
+          )}
+
           {loadingPrompts ? (
             <div className="text-center py-8">
               <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-3" />
