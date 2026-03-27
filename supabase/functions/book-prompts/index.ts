@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 serve(async (req) => {
@@ -13,6 +13,59 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
+    // Step 1: Correct spelling of title and author
+    const correctionResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        messages: [
+          {
+            role: "system",
+            content: `You are a book title and author spelling corrector. A kid is typing in a book title and author name and might have typos or misspellings. Your job is to figure out the correct book title and author name.
+
+If the input is already correct or you can't identify a real book, return the input as-is.
+
+Return ONLY a JSON object with two fields: "title" and "author". No extra text, no markdown, no code blocks. Just the raw JSON.
+
+Examples:
+Input: "Percy Jacson" by "Rick Riordun" → {"title":"Percy Jackson","author":"Rick Riordan"}
+Input: "Diary of a Whimpy Kid" by "Jeff Kiney" → {"title":"Diary of a Wimpy Kid","author":"Jeff Kinney"}
+Input: "Some Random Book" by "Unknown Author" → {"title":"Some Random Book","author":"Unknown Author"}`,
+          },
+          {
+            role: "user",
+            content: `Correct the spelling: "${title}" by ${author}`,
+          },
+        ],
+      }),
+    });
+
+    let correctedTitle = title;
+    let correctedAuthor = author;
+    let wasFixed = false;
+
+    if (correctionResponse.ok) {
+      const correctionData = await correctionResponse.json();
+      const raw = correctionData.choices?.[0]?.message?.content || "";
+      try {
+        // Strip markdown code blocks if present
+        const cleaned = raw.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
+        const parsed = JSON.parse(cleaned);
+        if (parsed.title && parsed.author) {
+          wasFixed = parsed.title.toLowerCase() !== title.toLowerCase() || parsed.author.toLowerCase() !== author.toLowerCase();
+          correctedTitle = parsed.title;
+          correctedAuthor = parsed.author;
+        }
+      } catch {
+        console.error("Failed to parse correction response:", raw);
+      }
+    }
+
+    // Step 2: Generate prompts using the corrected title/author
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -34,7 +87,7 @@ Return EXACTLY 3 questions, one per line, no numbering, no bullet points, no ext
           },
           {
             role: "user",
-            content: `Generate 3 reading questions for someone reading "${title}" by ${author}.`,
+            content: `Generate 3 reading questions for someone reading "${correctedTitle}" by ${correctedAuthor}.`,
           },
         ],
       }),
@@ -62,7 +115,12 @@ Return EXACTLY 3 questions, one per line, no numbering, no bullet points, no ext
     const content = data.choices?.[0]?.message?.content || "";
     const prompts = content.split("\n").map((l: string) => l.trim()).filter((l: string) => l.length > 0).slice(0, 3);
 
-    return new Response(JSON.stringify({ prompts }), {
+    return new Response(JSON.stringify({
+      prompts,
+      correctedTitle,
+      correctedAuthor,
+      wasFixed,
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
