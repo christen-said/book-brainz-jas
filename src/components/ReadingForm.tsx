@@ -79,6 +79,8 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
 
     setSaving(true);
     try {
+      // Ensure no undefined/null values in responses array
+      const cleanResponses = prompts.map((_, i) => responses[i] || "");
       const entry: ReadingEntry = {
         id: crypto.randomUUID(),
         date: new Date().toISOString(),
@@ -87,7 +89,7 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
         startPage: parseInt(startPage),
         endPage: parseInt(endPage),
         prompts,
-        responses,
+        responses: cleanResponses,
       };
       await saveEntry(entry);
       setStep("done");
