@@ -172,6 +172,9 @@ export default function Dashboard({ refreshKey }: DashboardProps) {
         <StatCard icon={TrendingUp} label="Total Pages" value={totalPages} color="bg-secondary" emoji="📈" />
       </div>
 
+      {/* Weekly Goal */}
+      <WeeklyGoalCard weekPages={weekPages} />
+
       {/* Weekly Progress */}
       <Card className="p-5 funky-border bg-card">
         <h3 className="font-display font-bold text-foreground mb-4">This Week's Damage 📊</h3>
