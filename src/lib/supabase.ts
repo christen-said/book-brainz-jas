@@ -63,3 +63,24 @@ export async function updateProfile(displayName: string) {
 
   if (error) throw error;
 }
+
+export async function getWeeklyGoal(): Promise<number> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return 100;
+  const { data } = await supabase
+    .from("profiles")
+    .select("weekly_page_goal")
+    .eq("user_id", user.id)
+    .single();
+  return (data as any)?.weekly_page_goal ?? 100;
+}
+
+export async function updateWeeklyGoal(goal: number): Promise<void> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+  const { error } = await supabase
+    .from("profiles")
+    .update({ weekly_page_goal: goal })
+    .eq("user_id", user.id);
+  if (error) throw error;
+}

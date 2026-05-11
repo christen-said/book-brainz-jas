@@ -8,6 +8,7 @@ import {
 } from "@/lib/readingLog";
 import { BookOpen, FileText, Calendar, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import WeeklyGoalCard from "./WeeklyGoalCard";
 
 interface DashboardProps {
   refreshKey: number;
@@ -170,6 +171,9 @@ export default function Dashboard({ refreshKey }: DashboardProps) {
         <StatCard icon={BookOpen} label="Total Books" value={totalBooks} color="bg-golden/15" emoji="📚" />
         <StatCard icon={TrendingUp} label="Total Pages" value={totalPages} color="bg-secondary" emoji="📈" />
       </div>
+
+      {/* Weekly Goal */}
+      <WeeklyGoalCard weekPages={weekPages} />
 
       {/* Weekly Progress */}
       <Card className="p-5 funky-border bg-card">

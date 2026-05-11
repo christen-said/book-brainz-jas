@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS weekly_page_goal integer NOT NULL DEFAULT 100;
