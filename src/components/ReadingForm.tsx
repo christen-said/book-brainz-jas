@@ -166,6 +166,7 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
     setAuthor("");
     setStartPage("");
     setEndPage("");
+    setMinutesRead("");
     setResponses([]);
     setPrompts([]);
     setFunFact(null);
