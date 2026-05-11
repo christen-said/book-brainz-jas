@@ -10,6 +10,7 @@ import { BookOpen, FileText, Calendar, TrendingUp, ChevronLeft, ChevronRight } f
 import { useState } from "react";
 import WeeklyGoalCard from "./WeeklyGoalCard";
 import LevelCard from "./LevelCard";
+import BookCover from "./BookCover";
 
 interface DashboardProps {
   refreshKey: number;
