@@ -10,6 +10,7 @@ export interface ReadingEntry {
   endPage: number;
   prompts: string[];
   responses: string[];
+  minutesRead?: number | null;
 }
 
 export interface Badge {
