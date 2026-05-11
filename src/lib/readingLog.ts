@@ -85,7 +85,7 @@ export function getTotalPagesRead(entries: ReadingEntry[]): number {
 }
 
 export function getTotalBooks(entries: ReadingEntry[]): number {
-  const titles = new Set(entries.map((e) => `${e.title}::${e.author}`));
+  const titles = new Set(entries.map((e) => `${e.title.toLowerCase().trim()}::${e.author.toLowerCase().trim()}`));
   return titles.size;
 }
 
