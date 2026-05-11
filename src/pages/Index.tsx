@@ -92,6 +92,7 @@ const Index = () => {
           </TabsContent>
         </Tabs>
       </main>
+      <LevelUpModal level={levelUp} onClose={() => setLevelUp(null)} />
     </div>
   );
 };
