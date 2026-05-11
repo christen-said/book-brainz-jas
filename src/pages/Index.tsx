@@ -1,17 +1,32 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReadingForm from "@/components/ReadingForm";
 import Dashboard from "@/components/Dashboard";
 import BadgeWall from "@/components/BadgeWall";
 import History from "@/components/History";
 import StreakBadge from "@/components/StreakBadge";
+import LevelUpModal from "@/components/LevelUpModal";
 import { BookOpen, BarChart3, Award, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import { useReadingEntries, getTotalPagesRead } from "@/lib/readingLog";
+import { getLevel, type ReaderLevel } from "@/lib/level";
 
 const Index = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const { signOut } = useAuth();
+  const { entries } = useReadingEntries(refreshKey);
+  const [levelUp, setLevelUp] = useState<ReaderLevel | null>(null);
+  const prevLevelRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const totalPages = getTotalPagesRead(entries);
+    const current = getLevel(totalPages);
+    if (prevLevelRef.current !== null && current.level > prevLevelRef.current) {
+      setLevelUp(current);
+    }
+    prevLevelRef.current = current.level;
+  }, [entries]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -77,6 +92,7 @@ const Index = () => {
           </TabsContent>
         </Tabs>
       </main>
+      <LevelUpModal level={levelUp} onClose={() => setLevelUp(null)} />
     </div>
   );
 };
