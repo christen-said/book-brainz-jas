@@ -9,6 +9,7 @@ import {
 import { BookOpen, FileText, Calendar, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import WeeklyGoalCard from "./WeeklyGoalCard";
+import LevelCard from "./LevelCard";
 
 interface DashboardProps {
   refreshKey: number;
