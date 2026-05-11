@@ -1,0 +1,1 @@
+ALTER TABLE public.reading_entries ADD COLUMN minutes_read integer;

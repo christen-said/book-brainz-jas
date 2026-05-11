@@ -140,6 +140,9 @@ export default function History({ refreshKey }: HistoryProps) {
                           <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-bold text-muted-foreground">
                             <span>📅 {formatDate(entry.date)}</span>
                             <span>📄 pp. {entry.startPage}–{entry.endPage}</span>
+                            {typeof entry.minutesRead === "number" && entry.minutesRead > 0 && (
+                              <span>⏱️ {entry.minutesRead} min</span>
+                            )}
                           </div>
 
                           {firstResponse && (

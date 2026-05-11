@@ -51,6 +51,7 @@ export type Database = {
           date: string
           end_page: number
           id: string
+          minutes_read: number | null
           prompts: string[]
           responses: string[]
           start_page: number
@@ -63,6 +64,7 @@ export type Database = {
           date?: string
           end_page: number
           id?: string
+          minutes_read?: number | null
           prompts?: string[]
           responses?: string[]
           start_page: number
@@ -75,6 +77,7 @@ export type Database = {
           date?: string
           end_page?: number
           id?: string
+          minutes_read?: number | null
           prompts?: string[]
           responses?: string[]
           start_page?: number

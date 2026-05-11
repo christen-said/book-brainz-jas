@@ -155,6 +155,12 @@ export default function Dashboard({ refreshKey }: DashboardProps) {
   });
 
   const weekPages = weekEntries.reduce((sum, e) => sum + Math.max(0, e.endPage - e.startPage), 0);
+  const timedEntries = entries.filter((e) => typeof e.minutesRead === "number" && (e.minutesRead ?? 0) > 0);
+  const weekTimedEntries = weekEntries.filter((e) => typeof e.minutesRead === "number" && (e.minutesRead ?? 0) > 0);
+  const weekMinutes = weekTimedEntries.reduce((s, e) => s + (e.minutesRead ?? 0), 0);
+  const avgMinutes = timedEntries.length > 0
+    ? Math.round(timedEntries.reduce((s, e) => s + (e.minutesRead ?? 0), 0) / timedEntries.length)
+    : 0;
 
   if (loading) {
     return (
@@ -175,6 +181,13 @@ export default function Dashboard({ refreshKey }: DashboardProps) {
         <StatCard icon={BookOpen} label="Total Books" value={totalBooks} color="bg-golden/15" emoji="📚" />
         <StatCard icon={TrendingUp} label="Total Pages" value={totalPages} color="bg-secondary" emoji="📈" />
       </div>
+
+      {(weekMinutes > 0 || avgMinutes > 0) && (
+        <div className="grid grid-cols-2 gap-3">
+          <StatCard icon={Calendar} label="Minutes This Week" value={weekMinutes} color="bg-accent/15" emoji="⏱️" />
+          <StatCard icon={TrendingUp} label="Avg Min/Session" value={avgMinutes} color="bg-primary/15" emoji="⏳" />
+        </div>
+      )}
 
       {/* Weekly Goal */}
       <WeeklyGoalCard weekPages={weekPages} />

@@ -9,6 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import confetti from "canvas-confetti";
 import BookCover from "./BookCover";
+import ReadingTimer from "./ReadingTimer";
+import { resetTimer } from "@/lib/timerStore";
 
 interface MCQuestion {
   question: string;
@@ -34,6 +36,7 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
   const [author, setAuthor] = useState("");
   const [startPage, setStartPage] = useState("");
   const [endPage, setEndPage] = useState("");
+  const [minutesRead, setMinutesRead] = useState<string>("");
   const [prompts, setPrompts] = useState<string[]>([]);
   const [responses, setResponses] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
@@ -143,8 +146,10 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
         endPage: parseInt(endPage),
         prompts: allPrompts,
         responses: allResponses,
+        minutesRead: minutesRead ? Math.max(0, parseInt(minutesRead)) : null,
       };
       await saveEntry(entry);
+      resetTimer();
       setStep("done");
       onSave();
       confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
@@ -161,6 +166,7 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
     setAuthor("");
     setStartPage("");
     setEndPage("");
+    setMinutesRead("");
     setResponses([]);
     setPrompts([]);
     setFunFact(null);
@@ -215,6 +221,8 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
   return (
     <div className="space-y-6">
       {step === "book" && (
+        <>
+        <ReadingTimer onStop={(mins) => setMinutesRead(String(mins))} />
         <Card className="p-6 funky-border bg-card">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-12 h-12 rounded-2xl bg-primary/15 flex items-center justify-center text-2xl rotate-[-5deg]">
@@ -244,11 +252,24 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
                 <Input type="number" placeholder="25" value={endPage} onChange={(e) => setEndPage(e.target.value)} className="bg-secondary/30 rounded-xl border-2" />
               </div>
             </div>
+            <div>
+              <label className="text-sm font-bold text-foreground mb-1 block font-display">
+                Minutes Read <span className="text-muted-foreground font-normal">(optional)</span>
+              </label>
+              <Input
+                type="number"
+                placeholder="Auto-fills from the timer"
+                value={minutesRead}
+                onChange={(e) => setMinutesRead(e.target.value)}
+                className="bg-secondary/30 rounded-xl border-2"
+              />
+            </div>
             <Button onClick={handleBookSubmit} className="w-full rounded-xl font-display font-bold funky-shadow" size="lg" disabled={!title || !author || !startPage || !endPage}>
               Next: The Questions Part 😩 <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
         </Card>
+        </>
       )}
 
       {step === "prompts" && (

@@ -18,6 +18,7 @@ export async function getEntriesFromDb(): Promise<ReadingEntry[]> {
     endPage: e.end_page,
     prompts: e.prompts || [],
     responses: e.responses || [],
+    minutesRead: (e as any).minutes_read ?? null,
   }));
 }
 
@@ -34,7 +35,8 @@ export async function saveEntryToDb(entry: ReadingEntry): Promise<void> {
     end_page: entry.endPage,
     prompts: entry.prompts,
     responses: entry.responses,
-  });
+    minutes_read: entry.minutesRead ?? null,
+  } as any);
 
   if (error) throw error;
 }
