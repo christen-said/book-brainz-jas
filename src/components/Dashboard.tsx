@@ -155,6 +155,12 @@ export default function Dashboard({ refreshKey }: DashboardProps) {
   });
 
   const weekPages = weekEntries.reduce((sum, e) => sum + Math.max(0, e.endPage - e.startPage), 0);
+  const timedEntries = entries.filter((e) => typeof e.minutesRead === "number" && (e.minutesRead ?? 0) > 0);
+  const weekTimedEntries = weekEntries.filter((e) => typeof e.minutesRead === "number" && (e.minutesRead ?? 0) > 0);
+  const weekMinutes = weekTimedEntries.reduce((s, e) => s + (e.minutesRead ?? 0), 0);
+  const avgMinutes = timedEntries.length > 0
+    ? Math.round(timedEntries.reduce((s, e) => s + (e.minutesRead ?? 0), 0) / timedEntries.length)
+    : 0;
 
   if (loading) {
     return (
