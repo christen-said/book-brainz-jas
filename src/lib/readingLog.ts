@@ -47,23 +47,32 @@ export async function saveEntry(entry: ReadingEntry) {
   await saveEntryToDb(entry);
 }
 
-function getEntriesForWeek(entries: ReadingEntry[], date: Date): ReadingEntry[] {
+// Format a Date as YYYY-MM-DD using its local calendar day
+export function toLocalDateString(date: Date): string {
+  return date.toLocaleDateString('en-CA');
+}
+
+function getWeekRangeStrings(date: Date): { start: string; end: string } {
   const startOfWeek = new Date(date);
   const day = startOfWeek.getDay();
   startOfWeek.setDate(startOfWeek.getDate() - day);
   startOfWeek.setHours(0, 0, 0, 0);
   const endOfWeek = new Date(startOfWeek);
   endOfWeek.setDate(endOfWeek.getDate() + 7);
+  return { start: toLocalDateString(startOfWeek), end: toLocalDateString(endOfWeek) };
+}
 
+function getEntriesForWeek(entries: ReadingEntry[], date: Date): ReadingEntry[] {
+  const { start, end } = getWeekRangeStrings(date);
   return entries.filter((e) => {
-    const d = new Date(e.date);
-    return d >= startOfWeek && d < endOfWeek;
+    const d = e.date.slice(0, 10);
+    return d >= start && d < end;
   });
 }
 
 export function getUniqueDaysForWeek(entries: ReadingEntry[], date: Date): number {
   const weekEntries = getEntriesForWeek(entries, date);
-  const uniqueDays = new Set(weekEntries.map((e) => e.date.split("T")[0]));
+  const uniqueDays = new Set(weekEntries.map((e) => e.date.slice(0, 10)));
   return uniqueDays.size;
 }
 
