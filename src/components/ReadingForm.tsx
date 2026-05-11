@@ -146,8 +146,10 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
         endPage: parseInt(endPage),
         prompts: allPrompts,
         responses: allResponses,
+        minutesRead: minutesRead ? Math.max(0, parseInt(minutesRead)) : null,
       };
       await saveEntry(entry);
+      resetTimer();
       setStep("done");
       onSave();
       confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
