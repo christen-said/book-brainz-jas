@@ -221,6 +221,8 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
   return (
     <div className="space-y-6">
       {step === "book" && (
+        <>
+        <ReadingTimer onStop={(mins) => setMinutesRead(String(mins))} />
         <Card className="p-6 funky-border bg-card">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-12 h-12 rounded-2xl bg-primary/15 flex items-center justify-center text-2xl rotate-[-5deg]">
