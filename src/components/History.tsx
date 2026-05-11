@@ -115,9 +115,12 @@ export default function History({ refreshKey }: HistoryProps) {
                   return (
                     <Card key={entry.id} className="p-4 funky-border bg-card">
                       <div className="flex items-start gap-3">
-                        <div className="text-2xl leading-none mt-0.5">
-                          {BOOK_EMOJIS[idx % BOOK_EMOJIS.length]}
-                        </div>
+                        <BookCover
+                          title={entry.title}
+                          author={entry.author}
+                          fallbackEmoji={BOOK_EMOJIS[idx % BOOK_EMOJIS.length]}
+                          size={56}
+                        />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
                             <div className="min-w-0">
