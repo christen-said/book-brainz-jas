@@ -220,7 +220,7 @@ export default function Dashboard({ refreshKey }: DashboardProps) {
                     <p className="font-bold text-foreground text-sm truncate">{entry.title}</p>
                     <p className="text-xs text-muted-foreground">
                       {entry.author} · pp. {entry.startPage}-{entry.endPage} ·{" "}
-                      {new Date(entry.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      {(() => { const [y, m, d] = entry.date.slice(0, 10).split("-").map(Number); return new Date(y, m - 1, d).toLocaleDateString("en-US", { month: "short", day: "numeric" }); })()}
                     </p>
                   </div>
                   <span className="text-xs font-bold text-primary-foreground bg-primary px-2.5 py-1 rounded-full">
