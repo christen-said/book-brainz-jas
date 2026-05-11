@@ -107,6 +107,25 @@ export function getStreakWeeks(entries: ReadingEntry[]): number {
   return streakWeeks;
 }
 
+// Consecutive-day streak ending today (or yesterday if she hasn't logged today yet).
+export function getDailyStreak(entries: ReadingEntry[]): number {
+  if (entries.length === 0) return 0;
+  const days = new Set(entries.map((e) => e.date.slice(0, 10)));
+  const today = toLocalDateString(new Date());
+  const cursor = new Date();
+  if (!days.has(today)) {
+    // grace: yesterday can still anchor an existing streak
+    cursor.setDate(cursor.getDate() - 1);
+    if (!days.has(toLocalDateString(cursor))) return 0;
+  }
+  let streak = 0;
+  while (days.has(toLocalDateString(cursor))) {
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
+
 // Reading prompts categorized by type
 const PROMPTS = {
   comprehension: [
