@@ -182,6 +182,13 @@ export default function Dashboard({ refreshKey }: DashboardProps) {
         <StatCard icon={TrendingUp} label="Total Pages" value={totalPages} color="bg-secondary" emoji="📈" />
       </div>
 
+      {(weekMinutes > 0 || avgMinutes > 0) && (
+        <div className="grid grid-cols-2 gap-3">
+          <StatCard icon={Calendar} label="Minutes This Week" value={weekMinutes} color="bg-accent/15" emoji="⏱️" />
+          <StatCard icon={TrendingUp} label="Avg Min/Session" value={avgMinutes} color="bg-primary/15" emoji="⏳" />
+        </div>
+      )}
+
       {/* Weekly Goal */}
       <WeeklyGoalCard weekPages={weekPages} />
 
