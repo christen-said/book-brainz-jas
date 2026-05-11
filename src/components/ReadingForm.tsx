@@ -188,6 +188,9 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
     return (
       <Card className="p-8 text-center funky-border bg-card">
         <div className="text-7xl mb-4 animate-pop-in">😮‍💨</div>
+        <div className="flex justify-center mb-4">
+          <BookCover title={title} author={author} fallbackEmoji="📖" size={64} />
+        </div>
         <h3 className="text-2xl font-display font-bold text-foreground mb-2">Ok, that's done.</h3>
         <p className="text-muted-foreground mb-6">Look at you, being all responsible and stuff. 👏</p>
 
