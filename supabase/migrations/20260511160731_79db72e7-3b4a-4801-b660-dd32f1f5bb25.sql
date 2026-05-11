@@ -1,0 +1,1 @@
+ALTER TABLE public.reading_entries ALTER COLUMN date TYPE date USING date::date, ALTER COLUMN date SET DEFAULT (now() AT TIME ZONE 'UTC')::date;
