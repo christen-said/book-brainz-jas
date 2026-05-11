@@ -147,8 +147,8 @@ export default function Dashboard({ refreshKey }: DashboardProps) {
 
   const dayMap = new Set<number>();
   weekEntries.forEach((e) => {
-    const d = new Date(e.date);
-    dayMap.add(d.getDay());
+    const [y, m, d] = e.date.slice(0, 10).split("-").map(Number);
+    dayMap.add(new Date(y, m - 1, d).getDay());
   });
 
   const weekPages = weekEntries.reduce((sum, e) => sum + Math.max(0, e.endPage - e.startPage), 0);
