@@ -4,6 +4,7 @@ import ReadingForm from "@/components/ReadingForm";
 import Dashboard from "@/components/Dashboard";
 import BadgeWall from "@/components/BadgeWall";
 import History from "@/components/History";
+import StreakBadge from "@/components/StreakBadge";
 import { BookOpen, BarChart3, Award, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
