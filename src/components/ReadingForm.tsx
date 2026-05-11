@@ -252,11 +252,24 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
                 <Input type="number" placeholder="25" value={endPage} onChange={(e) => setEndPage(e.target.value)} className="bg-secondary/30 rounded-xl border-2" />
               </div>
             </div>
+            <div>
+              <label className="text-sm font-bold text-foreground mb-1 block font-display">
+                Minutes Read <span className="text-muted-foreground font-normal">(optional)</span>
+              </label>
+              <Input
+                type="number"
+                placeholder="Auto-fills from the timer"
+                value={minutesRead}
+                onChange={(e) => setMinutesRead(e.target.value)}
+                className="bg-secondary/30 rounded-xl border-2"
+              />
+            </div>
             <Button onClick={handleBookSubmit} className="w-full rounded-xl font-display font-bold funky-shadow" size="lg" disabled={!title || !author || !startPage || !endPage}>
               Next: The Questions Part 😩 <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
         </Card>
+        </>
       )}
 
       {step === "prompts" && (
