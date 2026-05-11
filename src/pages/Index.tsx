@@ -41,15 +41,18 @@ const Index = () => {
       {/* Main Content */}
       <main className="container max-w-lg mx-auto px-4 py-6">
         <Tabs defaultValue="log" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6 bg-secondary h-14 rounded-2xl p-1">
-            <TabsTrigger value="log" className="font-display font-bold text-sm rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all">
-              <BookOpen className="w-4 h-4 mr-1.5" /> Log It
+          <TabsList className="grid w-full grid-cols-4 mb-6 bg-secondary h-14 rounded-2xl p-1">
+            <TabsTrigger value="log" className="font-display font-bold text-xs rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all">
+              <BookOpen className="w-4 h-4 mr-1" /> Log It
             </TabsTrigger>
-            <TabsTrigger value="dashboard" className="font-display font-bold text-sm rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all">
-              <BarChart3 className="w-4 h-4 mr-1.5" /> Stats
+            <TabsTrigger value="dashboard" className="font-display font-bold text-xs rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all">
+              <BarChart3 className="w-4 h-4 mr-1" /> Stats
             </TabsTrigger>
-            <TabsTrigger value="badges" className="font-display font-bold text-sm rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all">
-              <Award className="w-4 h-4 mr-1.5" /> Swag
+            <TabsTrigger value="badges" className="font-display font-bold text-xs rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all">
+              <Award className="w-4 h-4 mr-1" /> Swag
+            </TabsTrigger>
+            <TabsTrigger value="history" className="font-display font-bold text-xs rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all">
+              <span className="mr-1">📜</span> History
             </TabsTrigger>
           </TabsList>
 
@@ -63,6 +66,10 @@ const Index = () => {
 
           <TabsContent value="badges">
             <BadgeWall refreshKey={refreshKey} />
+          </TabsContent>
+
+          <TabsContent value="history">
+            <History refreshKey={refreshKey} />
           </TabsContent>
         </Tabs>
       </main>
