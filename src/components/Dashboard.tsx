@@ -166,6 +166,8 @@ export default function Dashboard({ refreshKey }: DashboardProps) {
 
   return (
     <div className="space-y-6">
+      <LevelCard totalPages={totalPages} />
+
       <div className="grid grid-cols-2 gap-3">
         <StatCard icon={Calendar} label="Days This Week" value={`${daysThisWeek}/5`} color="bg-primary/15" emoji="📅" />
         <StatCard icon={FileText} label="Pages This Week" value={weekPages} color="bg-accent/15" emoji="📄" />
