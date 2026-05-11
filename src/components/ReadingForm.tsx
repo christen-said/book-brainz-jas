@@ -36,6 +36,7 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
   const [author, setAuthor] = useState("");
   const [startPage, setStartPage] = useState("");
   const [endPage, setEndPage] = useState("");
+  const [minutesRead, setMinutesRead] = useState<string>("");
   const [prompts, setPrompts] = useState<string[]>([]);
   const [responses, setResponses] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
