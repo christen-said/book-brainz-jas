@@ -223,7 +223,12 @@ export default function Dashboard({ refreshKey }: DashboardProps) {
               .slice(0, 5)
               .map((entry, idx) => (
                 <div key={entry.id} className="flex items-center gap-3 p-3 rounded-2xl bg-secondary/40 border-2 border-border">
-                  <div className="text-2xl">{["📕", "📗", "📘", "📙", "📓"][idx % 5]}</div>
+                  <BookCover
+                    title={entry.title}
+                    author={entry.author}
+                    fallbackEmoji={["📕", "📗", "📘", "📙", "📓"][idx % 5]}
+                    size={48}
+                  />
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-foreground text-sm truncate">{entry.title}</p>
                     <p className="text-xs text-muted-foreground">
