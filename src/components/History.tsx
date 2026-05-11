@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useReadingEntries } from "@/lib/readingLog";
+import BookCover from "./BookCover";
 
 interface HistoryProps {
   refreshKey: number;
