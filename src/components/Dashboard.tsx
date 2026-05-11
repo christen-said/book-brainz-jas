@@ -8,6 +8,7 @@ import {
 } from "@/lib/readingLog";
 import { BookOpen, FileText, Calendar, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import WeeklyGoalCard from "./WeeklyGoalCard";
 
 interface DashboardProps {
   refreshKey: number;
