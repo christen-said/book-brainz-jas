@@ -135,7 +135,7 @@ export default function ReadingForm({ onSave }: ReadingFormProps) {
 
       const entry: ReadingEntry = {
         id: crypto.randomUUID(),
-        date: new Date().toISOString(),
+        date: new Date().toLocaleDateString('en-CA'),
         title,
         author,
         startPage: parseInt(startPage),

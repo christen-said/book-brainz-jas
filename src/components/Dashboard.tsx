@@ -43,9 +43,12 @@ function MonthlyView({ entries }: { entries: { date: string; startPage: number; 
 
   const dayData = new Map<number, { pages: number; count: number }>();
   entries.forEach((e) => {
-    const d = new Date(e.date);
-    if (d.getFullYear() === year && d.getMonth() === month) {
-      const day = d.getDate();
+    const ds = e.date.slice(0, 10);
+    const [yStr, mStr, dStr] = ds.split("-");
+    const ey = parseInt(yStr);
+    const em = parseInt(mStr) - 1;
+    if (ey === year && em === month) {
+      const day = parseInt(dStr);
       const existing = dayData.get(day) || { pages: 0, count: 0 };
       dayData.set(day, {
         pages: existing.pages + Math.max(0, e.endPage - e.startPage),
@@ -144,8 +147,8 @@ export default function Dashboard({ refreshKey }: DashboardProps) {
 
   const dayMap = new Set<number>();
   weekEntries.forEach((e) => {
-    const d = new Date(e.date);
-    dayMap.add(d.getDay());
+    const [y, m, d] = e.date.slice(0, 10).split("-").map(Number);
+    dayMap.add(new Date(y, m - 1, d).getDay());
   });
 
   const weekPages = weekEntries.reduce((sum, e) => sum + Math.max(0, e.endPage - e.startPage), 0);
@@ -217,7 +220,7 @@ export default function Dashboard({ refreshKey }: DashboardProps) {
                     <p className="font-bold text-foreground text-sm truncate">{entry.title}</p>
                     <p className="text-xs text-muted-foreground">
                       {entry.author} · pp. {entry.startPage}-{entry.endPage} ·{" "}
-                      {new Date(entry.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      {(() => { const [y, m, d] = entry.date.slice(0, 10).split("-").map(Number); return new Date(y, m - 1, d).toLocaleDateString("en-US", { month: "short", day: "numeric" }); })()}
                     </p>
                   </div>
                   <span className="text-xs font-bold text-primary-foreground bg-primary px-2.5 py-1 rounded-full">
